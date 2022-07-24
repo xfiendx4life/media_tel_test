@@ -8,7 +8,7 @@ type Info struct {
 	// of communications between two persons
 	MaxCommunications int `json:"maxComs"`
 	// Total number of communications between people in graph
-	AverageCommunications int `json:"average"`
+	AverageCommunications float64 `json:"average"`
 }
 
 type Com struct {

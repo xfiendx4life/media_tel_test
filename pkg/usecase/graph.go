@@ -1,9 +1,15 @@
 package usecase
 
-import "github.com/xfiendx4life/media_tel_test/pkg/models"
+import (
+	"math"
+
+	"github.com/xfiendx4life/media_tel_test/pkg/models"
+)
 
 type Usecase struct {
 	Graph models.Graph
+	// to count every new person
+	numOfPeople int
 }
 
 func New() *Usecase {
@@ -23,15 +29,16 @@ func getIndex(a []models.Com, data string) int {
 	return -1
 }
 
-func addCom(graph map[string][]models.Com, first, second string) (maxComs int) {
-	maxComs = 1
+func (uc *Usecase) addCom(first, second string) {
+	graph := uc.Graph.Data
 	if _, ok := graph[first]; !ok {
-		// graph[first] = make([]models.Com, 1)
 		graph[first] = []models.Com{
 			{
 				Name: second,
 				Num:  1},
 		}
+		// the only place where person adds
+		uc.numOfPeople++
 	} else {
 		ind := getIndex(graph[first], second)
 		if ind == -1 {
@@ -41,21 +48,43 @@ func addCom(graph map[string][]models.Com, first, second string) (maxComs int) {
 			})
 		} else {
 			graph[first][ind].Num++
-			maxComs = graph[first][ind].Num
 		}
 	}
-	return
 }
 
 func (uc *Usecase) Add(list [][2]string) {
 	for _, row := range list {
 		fst, scnd := row[0], row[1]
 
-		if max := addCom(uc.Graph.Data, fst, scnd); max > uc.Graph.Info.MaxCommunications {
-			uc.Graph.Info.MaxCommunications = max
-		}
-		if max := addCom(uc.Graph.Data, scnd, fst); max > uc.Graph.Info.MaxCommunications {
-			uc.Graph.Info.MaxCommunications = max
-		}
+		uc.addCom(fst, scnd)
+		uc.addCom(scnd, fst)
 	}
+}
+
+func (uc *Usecase) countInfo() {
+	min := math.MaxInt
+	fullSum := 0
+	max := 0
+	for _, node := range uc.Graph.Data {
+		sum := 0
+		for _, itm := range node {
+			sum += itm.Num
+		}
+		if sum < min {
+			min = sum
+		}
+		if sum > max {
+			max = sum
+		}
+		fullSum += sum
+	}
+	uc.Graph.Info.MinCommunications = min
+	uc.Graph.Info.AverageCommunications = float64(fullSum) / float64(uc.numOfPeople)
+	uc.Graph.Info.MaxCommunications = max
+}
+
+func (uc *Usecase) GetGraph() *models.Graph {
+	// count min and average
+	uc.countInfo()
+	return &uc.Graph
 }

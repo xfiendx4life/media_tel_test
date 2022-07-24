@@ -1,6 +1,7 @@
 package usecase_test
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -34,4 +35,20 @@ func TestAdd(t *testing.T) {
 		{Name: "P", Num: 1},
 	},
 		uc.Graph.Data["L"])
+}
+
+// not cleant tests =(
+func TestGetGraph(t *testing.T) {
+	uc := usecase.New()
+	testData := [][2]string{
+		{"M", "K"},
+		{"P", "L"},
+		{"M", "P"},
+		{"M", "K"},
+	}
+	uc.Add(testData)
+	g := uc.GetGraph()
+	assert.Less(t, math.Abs(g.Info.AverageCommunications - 2.0), 0.001)
+	assert.Equal(t, 1, g.Info.MinCommunications)
+	assert.Equal(t, 3, g.Info.MaxCommunications)
 }
