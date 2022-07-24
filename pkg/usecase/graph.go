@@ -6,14 +6,19 @@ import (
 	"github.com/xfiendx4life/media_tel_test/pkg/models"
 )
 
-type Usecase struct {
+type Usecase interface {
+	Add(list [][2]string)
+	GetGraph() *models.Graph
+}
+
+type usecase struct {
 	Graph models.Graph
 	// to count every new person
 	numOfPeople int
 }
 
-func New() *Usecase {
-	return &Usecase{
+func New() Usecase {
+	return &usecase{
 		Graph: models.Graph{
 			Data: make(map[string][]models.Com),
 		},
@@ -29,7 +34,7 @@ func getIndex(a []models.Com, data string) int {
 	return -1
 }
 
-func (uc *Usecase) addCom(first, second string) {
+func (uc *usecase) addCom(first, second string) {
 	graph := uc.Graph.Data
 	if _, ok := graph[first]; !ok {
 		graph[first] = []models.Com{
@@ -52,7 +57,7 @@ func (uc *Usecase) addCom(first, second string) {
 	}
 }
 
-func (uc *Usecase) Add(list [][2]string) {
+func (uc *usecase) Add(list [][2]string) {
 	for _, row := range list {
 		fst, scnd := row[0], row[1]
 
@@ -61,7 +66,7 @@ func (uc *Usecase) Add(list [][2]string) {
 	}
 }
 
-func (uc *Usecase) countInfo() {
+func (uc *usecase) countInfo() {
 	min := math.MaxInt
 	fullSum := 0
 	max := 0
@@ -83,7 +88,7 @@ func (uc *Usecase) countInfo() {
 	uc.Graph.Info.MaxCommunications = max
 }
 
-func (uc *Usecase) GetGraph() *models.Graph {
+func (uc *usecase) GetGraph() *models.Graph {
 	// count min and average
 	uc.countInfo()
 	return &uc.Graph

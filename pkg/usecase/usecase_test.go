@@ -1,6 +1,8 @@
 package usecase_test
 
 import (
+	"encoding/json"
+	"fmt"
 	"math"
 	"testing"
 
@@ -18,23 +20,24 @@ func TestAdd(t *testing.T) {
 		{"M", "K"},
 	}
 	uc.Add(testData)
+	g := uc.GetGraph().Data
 	assert.EqualValues(t, []models.Com{
 		{Name: "K", Num: 2},
 		{Name: "P", Num: 1},
-	}, uc.Graph.Data["M"])
+	}, g["M"])
 	assert.EqualValues(t, []models.Com{
 		{Name: "M", Num: 2},
 	},
-		uc.Graph.Data["K"])
+		g["K"])
 	assert.EqualValues(t, []models.Com{
 		{Name: "L", Num: 1},
 		{Name: "M", Num: 1},
 	},
-		uc.Graph.Data["P"])
+		g["P"])
 	assert.EqualValues(t, []models.Com{
 		{Name: "P", Num: 1},
 	},
-		uc.Graph.Data["L"])
+		g["L"])
 }
 
 // not cleant tests =(
@@ -48,7 +51,9 @@ func TestGetGraph(t *testing.T) {
 	}
 	uc.Add(testData)
 	g := uc.GetGraph()
-	assert.Less(t, math.Abs(g.Info.AverageCommunications - 2.0), 0.001)
+	assert.Less(t, math.Abs(g.Info.AverageCommunications-2.0), 0.001)
 	assert.Equal(t, 1, g.Info.MinCommunications)
 	assert.Equal(t, 3, g.Info.MaxCommunications)
+	res, _ := json.Marshal(testData)
+	fmt.Println(string(res))
 }
