@@ -50,7 +50,7 @@ paths:
                 $ref: "#components/schemas/Graph"
         '500':
           description: internal error
-  /add:
+  /coms/add:
     post:
       operationId: add communications
       requestBody:

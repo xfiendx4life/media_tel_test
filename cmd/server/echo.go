@@ -20,7 +20,7 @@ func New(del *delivery.Deliver) *EchoServer {
 		e: *echo.New(),
 	}
 	es.e.Logger.SetLevel(log.INFO)
-	es.e.POST("/add", del.Add)
+	es.e.POST("/coms/add", del.Add)
 	es.e.GET("/graph", del.Graph)
 	return es
 }

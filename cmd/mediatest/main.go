@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strconv"
 
 	"github.com/xfiendx4life/media_tel_test/cmd/server"
 	"github.com/xfiendx4life/media_tel_test/pkg/delivery"
@@ -12,12 +13,10 @@ import (
 )
 
 func main() {
-	var err error
-	// port, err := strconv.Atoi(os.Getenv("PORT"))
-	// if err != nil {
-	// 	log.Fatalf("can't get port %s", err)
-	// }
-	port := 8000
+	port, err := strconv.Atoi(os.Getenv("PORT"))
+	if err != nil {
+		log.Fatalf("can't get port %s", err)
+	}
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt)
 	uCase := usecase.New()
