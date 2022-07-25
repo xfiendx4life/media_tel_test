@@ -67,6 +67,7 @@ func (uc *usecase) Add(list [][2]string) {
 }
 
 func (uc *usecase) countInfo() {
+	uc.Graph.Info.AverageCommunications = 0
 	min := math.MaxInt
 	fullSum := 0
 	max := 0

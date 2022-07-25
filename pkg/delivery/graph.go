@@ -20,7 +20,10 @@ func New(uc usecase.Usecase) *Deliver {
 }
 
 func (d *Deliver) Graph(ctx echo.Context) error {
-	return ctx.JSON(http.StatusOK, d.uc.GetGraph())
+	if err := ctx.JSON(http.StatusOK, d.uc.GetGraph()); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Empty Graph")
+	}
+	return nil
 }
 
 func (d *Deliver) Add(ctx echo.Context) error {
