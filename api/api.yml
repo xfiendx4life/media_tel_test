@@ -1,0 +1,73 @@
+openapi: 3.0.0
+info: 
+  title: MediaTelTest
+  description: open api specification for MediaTelTest
+  version: 1.0.0
+components:
+  schemas:
+    Info:
+      type: object
+      properties: 
+        minComs:
+          type: number
+        maxComs: 
+          type: number
+        average:
+          type: number
+    Com:
+      type: object
+      properties:
+        name:
+          type: string
+        num:
+          type: number
+    Graph:
+      type: object
+      properties: 
+        graph:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: object
+              $ref: "#components/schemas/Com"
+        info:
+          type: object
+          $ref: "#components/schemas/Info"
+
+paths:
+  /graph:
+    get:
+      operationId: get graph
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                description: result graph
+                type: object
+                $ref: "#components/schemas/Graph"
+        '500':
+          description: internal error
+  /coms/add:
+    post:
+      operationId: add communications
+      requestBody:
+        description: list of all communications
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: array
+                items:
+                  type: string
+                minItems: 2
+                maxItems: 2
+      responses:
+        '202':
+          description: accepted
+        '400':
+          description: bad request
+        
